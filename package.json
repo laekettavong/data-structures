@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2",
+    "build": "babel src -d dist",
     "test": "mocha --compilers --no-deprecation js:babel-register"
   },
   "keywords": [],
@@ -16,6 +17,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.4",
+    "sinon": "^7.0.0"
   }
 }

@@ -1,4 +1,6 @@
-const Node = require('./Node')
+import Node from './Node'
+
+const removeDuplicates = Symbol('removeDuplicates');
 
 module.exports = class LinkedList {
     constructor(value, allowDuplicates) {
@@ -7,6 +9,25 @@ module.exports = class LinkedList {
         this.isAllowDuplicates = allowDuplicates != null && typeof allowDuplicates == 'boolean' ? allowDuplicates : true
     }
 
+    /***** PRIVATE FUNCTIONS *****/
+    [removeDuplicates] = () => {
+        const values = []
+        let current = this.head
+        let prev = this.head
+        while (current != null) {
+            if (!values.includes(current.getValue())) {
+                values.push(current.getValue())
+                prev = current
+                current = current.getNext()
+            } else {
+                this.deleteNode(current.getValue())
+                current = prev.getNext().getNext()
+            }
+        }
+        return values
+    }
+
+    /***** PUBLIC FUNCTIONS *****/
     getHead = () => {
         return this.head
     }
@@ -17,7 +38,7 @@ module.exports = class LinkedList {
             return
         }
 
-        if (!this.isAllowDuplicates && this.hasValue(value)) {
+        if (!this.isAllowDuplicates && this.contains(value)) {
             return
         }
 
@@ -56,31 +77,45 @@ module.exports = class LinkedList {
         }
     }
 
-    hasValue = (value) => {
+    contains = (value) => {
         let current = this.head
         while (current != null) {
             if (current.getValue() === value) return true
             current = current.getNext()
         }
-
         return false
     }
 
-    removeDuplicates = () => {
-        if (this.head == null) return
+    getNodeValues = () => {
         const values = []
+        if (this.head == null) return values
         let current = this.head
-        let prev = this.head
         while (current != null) {
-            if (!values.includes(current.getValue())) {
-                values.push(current.getValue())
-                prev = current
-                current = current.getNext()
-            } else {
-                this.deleteNode(current.getValue())
-                current = prev.getNext().getNext()
-            }
+            values.push(current.getValue())
+            current = current.getNext()
         }
+        return values
+    }
+
+    getValueArray = () => {
+        return this.isAllowDuplicates ? this.getNodeValues() : this[removeDuplicates]()
+    }
+
+    sortAscending = () => {
+        this.sort(this.getValueArray().sort((a, b) => a - b))
+    }
+
+    sortDescending = () => {
+        this.sort(this.getValueArray().sort((a, b) => b - a))
+    }
+
+    sort = (values) => {
+        this.head = new Node(values.shift())
+        let current = this.head
+        values.forEach(value => {
+            current.setNext(new Node(value))
+            current = current.getNext()
+        })
     }
 
     getNodeCount = () => {
@@ -88,8 +123,8 @@ module.exports = class LinkedList {
         if (this.head == null) return count
         let current = this.head
         while (current != null) {
-            count++
             current = current.getNext()
+            count++
         }
         return count
     }

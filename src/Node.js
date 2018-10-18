@@ -1,5 +1,6 @@
 module.exports = class Node {
     constructor(value) {
+        if (typeof value !== 'number') throw new TypeError('Numeric value only')
         this.value = value
         this.next = null
     }
